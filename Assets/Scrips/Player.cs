@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -23,7 +24,10 @@ public class Player : MonoBehaviour
         float horizontalforce = Input.GetAxis("Horizontal") * forcemultiplier;
         float verticalforce = Input.GetAxis("Vertical") * forcemultiplier;
 
-        rb.AddForce(horizontalforce, 0f, +verticalforce);
+        //rb.AddForce(horizontalforce, 0f, -verticalforce);
+        horizontalforce *= Time.deltaTime;
+        verticalforce *= Time.deltaTime;
+        transform.Translate(horizontalforce, 0, verticalforce);
 
         if (Input.GetKeyDown(KeyCode.Space) && canjump)
         {
@@ -37,5 +41,11 @@ public class Player : MonoBehaviour
         {
             canjump = true;
         }
-    }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            SceneManager.LoadScene("GameOver");
+
+        }
+    } 
 }

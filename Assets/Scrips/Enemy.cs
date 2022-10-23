@@ -69,6 +69,8 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Enemy get shooted");
 
+            
+
             Destroy(collision.gameObject);
             Destroy(this.gameObject);
 
