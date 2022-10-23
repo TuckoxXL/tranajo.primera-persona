@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Shot : MonoBehaviour
 {
     public GameObject bullet;
     public Transform spawnpoint;
+    public Text KillCountUI;
+    public int KillCount;
 
     public float shotForce = 1500;
     public float shotRate = 0.5f;
@@ -32,5 +35,12 @@ public class Shot : MonoBehaviour
 
             }
         }
+    }
+
+    public void Enemykilled()
+    {
+        Debug.Log("Enemy Killed");
+        KillCount++;
+        KillCountUI.text = KillCount.ToString();
     }
 }

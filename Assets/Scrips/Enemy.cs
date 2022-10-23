@@ -6,41 +6,54 @@ public class Enemy : MonoBehaviour
 {
     public int rutina;
     public float cronometro;
-    public Animation ani;
     public Quaternion angulo;
     public float grado;
+
+    public GameObject target;
 
     // Start is called before the first frame update
     void Start()
     {
-        ani = GetComponent<Animation>();
+        
+        target = GameObject.Find("Player");
     }
 
     public void comportamiento_enemigo()
     {
-        cronometro += 1 * Time.deltaTime;
-        if (cronometro >= 4)
+        if (Vector3.Distance(transform.position, target.transform.position) > 5)
         {
-            rutina = Random.Range(0, 2);
-            cronometro = 0;
+
+
+            cronometro += 1 * Time.deltaTime;
+            if (cronometro >= 2)
+            {
+                rutina = Random.Range(0, 2);
+                cronometro = 0;
+            }
+
+            switch (rutina)
+            {
+           
+
+                case 0:
+                    grado = Random.Range(0, 360);
+                    angulo = Quaternion.Euler(0, grado, 0);
+                    rutina++;
+                    break;
+
+                case 1:
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, angulo, 2f);
+                    transform.Translate(Vector3.forward * 1 * Time.deltaTime);
+                    break;
+
+            }
         }
-        
-        switch (rutina)
+        else
         {
-          case 0:
-                ani.Stop("Walk");
-                break;
-
-          case 1:
-                grado = Random.Range(0, 360);
-                angulo = Quaternion.Euler(0, grado, 0);
-                rutina++;
-                break;
-
-            case 2:
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, angulo, 0.5f);
-                transform.Translate(Vector3.forward * 1 * Time.deltaTime);
-                break;
+            var LookPos = target.transform.position - transform.position;
+            LookPos.y = 0;
+            var rotation = Quaternion.LookRotation(LookPos);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 2);
 
         }
     }
@@ -49,4 +62,20 @@ public class Enemy : MonoBehaviour
     {
         comportamiento_enemigo();
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Bullet"))
+        {
+            Debug.Log("Enemy get shooted");
+
+            Destroy(collision.gameObject);
+            Destroy(this.gameObject);
+
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Shot>().Enemykilled();
+
+        }
+    }
+
+    
 }
